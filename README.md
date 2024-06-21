@@ -3,4 +3,4 @@ Following this great [guide](https://tobiasvl.github.io/blog/write-a-chip-8-emul
 
 Has a sound timer but doesn't make any sound lol
 
-Compile with `gcc main.c `sdl2-config --cflags --libs`
+Compile with `gcc main.c \`sdl2-config --cflags --libs\``
