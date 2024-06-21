@@ -11,7 +11,7 @@
 #define SHIFT_USES_Y true
 #define CHANGE_I false 
 
-#define DEBUG false 
+#define DEBUG true 
 
 #define min(x, y) (((x) < (y)) ? x : y)
 #define max(x, y) (((x) > (y)) ? x : y)
@@ -32,7 +32,7 @@
 #define MAX_KEYPAD_KEYCODE 33
 
 // how many ops per second
-#define CLOCK_SPEED 700
+#define CLOCK_SPEED 20
 // how often delay timer and sound timer should be decremented (also in Hz)
 #define TIMER_SPEED 60
 
@@ -199,7 +199,7 @@ int main() {
 	initKeypad();
 	initMem();
 	initFont();
-	char romsource[] = "roms/testfont.ch8";
+	char romsource[] = "roms/tictactoe/tictactoe.ch8";
 	loadProgram(romsource);
 	startTimers();
 	initWindow();
@@ -238,7 +238,13 @@ int main() {
 		NN = mem[pc+1];
 		NNN = (regX<<8) + NN;
 
-		if (DEBUG) printf("PC, byte 1, byte 2: %X, %X, %X\n", pc, mem[pc], mem[pc+1]);
+		if (DEBUG) {
+			printf("PC, byte 1, byte 2: %X, %X, %X\n", pc, mem[pc], mem[pc+1]);
+			for (int i = 0; i < 16; i++) {
+				printf("Reg%X:%X ", i, regs[i]);
+			}
+			printf("\n");
+		}
 
 		pc += 2;
 		// unsigned and signed answer variables of larger size
@@ -425,19 +431,16 @@ int main() {
 						printf("I: %X\n", I);
 						break;
 					case 0x33:
-						Uint8 n_digits = 0;
 						Uint8 tmp = regs[regX];
-						while (tmp > 0) {
-							mem[I + n_digits] = (tmp%10);
-							n_digits++;
+						for (int i = 0; i < 3; i++) {
+							mem[I + 3 - i - 1] = (tmp%10);
 							tmp /= 10;
 						}
-						// reverse digits in memory
-						for (int i = 0; i < n_digits/2; i++) {
-							tmp = mem[I + i];
-							mem[I + i] = mem[I + n_digits - i - 1];
-							mem[I + n_digits - i - 1] = tmp;
+						printf("digits: ");
+						for (int i = 0; i < 3; i++) {
+							printf("%d ", mem[I + i]);
 						}
+						printf("\n");
 						break;
 					case 0x55:
 						for (int i = 0; i <= regX; i++) {
