@@ -9,7 +9,7 @@
 // ==== MACROS ====
 // ambiguous instruction options
 #define SHIFT_USES_Y true
-#define CHANGE_I true 
+#define CHANGE_I false 
 
 #define DEBUG false 
 
@@ -32,7 +32,7 @@
 #define MAX_KEYPAD_KEYCODE 33
 
 // how many ops per second
-#define CLOCK_SPEED 100
+#define CLOCK_SPEED 700
 // how often delay timer and sound timer should be decremented (also in Hz)
 #define TIMER_SPEED 60
 
@@ -125,7 +125,7 @@ void initMem() {
 }
 
 void initFont() {
-	memcpy(mem, font, 50);
+	memcpy(mem+FONT_START, font, 80);
 }
 
 void initKeypad() {
@@ -199,7 +199,7 @@ int main() {
 	initKeypad();
 	initMem();
 	initFont();
-	char romsource[] = "roms/octoachip8story.ch8";
+	char romsource[] = "roms/testfont.ch8";
 	loadProgram(romsource);
 	startTimers();
 	initWindow();
@@ -420,7 +420,9 @@ int main() {
 						regs[0xF] = (uans >= (1<<16));
 						break;
 					case 0x29:
-						I = FONT_START + 5*_nibble1(regs[regX]);
+						printf("fonting %d\n", regs[regX]);
+						I = FONT_START + 5*_nibble2(regs[regX]);
+						printf("I: %X\n", I);
 						break;
 					case 0x33:
 						Uint8 n_digits = 0;
